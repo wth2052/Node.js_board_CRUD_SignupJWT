@@ -40,7 +40,8 @@ router.post("/", async (req, res) => {
       });
       return;
     }
-    const token = jwt.sign({userId: user.userId}, process.env.JWT_SECRET )
+    //5분짜리 토큰
+    const token = jwt.sign({userId: user.userId}, process.env.JWT_SECRET ,{ expiresIn: '5m'})
     // setUserToken(res, req.userId);
     // res.redirect('/');
     // setUserToken = (res, user)=> {
@@ -55,9 +56,14 @@ router.post("/", async (req, res) => {
     //   res.cookie("x_auth", user.token)
     // })
 
-    // 무작정 토큰 보내버리기~
-    res.send({
-      token: jwt.sign({ userId: user.userId }, "customized-secret-key"),
+    // 무작정 토큰 보내버리기~ 니 로그인 성공~
+    // res.send({
+    //   token: token, 
+    // });
+    res.cookie('user', token, {
+      httpOnly: true
     });
+    res.send('로그인에 성공하였습니다.');
   });
+  
   module.exports = router;
