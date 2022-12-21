@@ -1,7 +1,8 @@
 // /routes/comments.js
 const express = require("express")
+const { QueryTypes } = require('sequelize');
 const router = express.Router()
-const Posts = require("../schemas/posts")
+const { Comment } = require('../models')
 const authMiddleware = require("../middlewares/auth-middleware.js");
 //GET 댓글 조회 완성
 router.get("/:postsId", async (req, res) => {
@@ -11,24 +12,33 @@ router.get("/:postsId", async (req, res) => {
 })
 
 //POST 댓글 작성 완성
-router.post("/:postsId", authMiddleware, async (req, res) => {
-  const { postsId } = req.params;
-  const {nickname, password,content} = req.body
-  const post = await Posts.findById (postsId)
-  const date = new Date()
-  const commentid = date.valueOf();
-    if(nickname, content, password){
-        post.comments.push({
-        nickname, 
-        content, 
-        password,
-        commentid,
-        createdAt: new Date()
-    });
-      const result = await post.save();
-      console.log(result)
-      return res.status(200).send({message: "댓글 작성 성공!"});
-    }
+router.post("/:id", async (req, res) => {
+  // const { id } = req.params;
+  // const {nickname, password,content} = req.body
+  // const post = await Post.findById (id)
+  //   if(nickname, content, password){
+  //       post.comments.push({
+  //       nickname, 
+  //       content, 
+  //       password,
+  //       id,
+  //       createdAt: new Date()
+  //   });
+  //     const result = await post.save();
+  //     console.log(result)
+  //     return res.status(200).send({message: "댓글 작성 성공!"});
+  //   }
+  const {nickname, password, content} = req.body;
+  await Comment.create({nickname, password, content})
+    .then((result) => {
+      console.log(result);
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.error(err);
+      next(err);
+    })
+
     if(!content || !nickname || !password){
         return res.status(400).json({success: false, errorMessage:"내용이나 작성자가 입력되지 않았습니다. 다시한번 확인해주세요."});
       }

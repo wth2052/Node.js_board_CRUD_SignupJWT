@@ -2,12 +2,13 @@
 // /routes/posts.js
 const express = require("express")
 const router = express.Router()
-const { Post, Comments } = require('../models')
+const { Post, Comments, sequelize } = require('../models')
 const authMiddleware = require("../middlewares/auth-middleware");
+const { Sequelize } = require("sequelize");
 
 
 // 게시물 작성 POST
-    router.post("/", authMiddleware, async (req, res) => {
+    router.post("/",  async (req, res) => {
     const {user, password, title, content} = req.body
     //빈칸에 대한 if 요청, try catch 사용
       try {
@@ -33,17 +34,24 @@ router.get("/", async (req, res) => {
 //GET 게시글 상세조회 완성
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
-  const getOnePosts = await Post.findOne({
-    where: {id: id}
-  })
-  res.status(200).json(getOnePosts);
+  
+  const [results] = await sequelize.query(
+    "SELECT * FROM Posts LEFT JOIN Comments ON Posts.id = Comments.id"
+  );
+  // const getOnePosts = await Post.findOne({
+    // include: [{
+    //     model: Comments,
+    // where: {id: id}
+  // }]
+  // })
+  res.status(200).json(results);
 })
 
 
 
 //PUT 게시글 수정 
 // 발생할수 있는 상황 : 비밀번호 불일치, 비밀번호 입력안함, 비밀번호 일치
-router.put("/:id", async (req, res) => {
+router.put("/:id", authMiddleware,async (req, res) => {
   const { id } = req.params;
   const { password, title, content } = req.body;
   // find 메소드 : 제공되는 조건을 만족하는 첫번째 엘리먼트 값을 리턴하는 함수
@@ -83,7 +91,7 @@ router.put("/:id", async (req, res) => {
   }
 })
 // 발생할수 있는 상황 : 비밀번호 불일치, 비밀번호 입력안함, 비밀번호 일치
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authMiddleware,async (req, res) => {
   const { id } = req.params;
   const { password } = req.body;
   // find 메소드 : 제공되는 조건을 만족하는 첫번째 엘리먼트 값을 리턴하는 함수

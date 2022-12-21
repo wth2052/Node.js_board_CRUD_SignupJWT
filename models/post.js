@@ -9,8 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      // define association here
+    static associate(db) {
+      db.Post.hasMany(db.Comment, { foreignKey: 'Commentid_pk', sourceKey: 'id'});   // 사용자는 여러개의 댓글을 가질 수 있음
+      //Post모델에 id_pk 특성을 추가
+      // db.Comment.belongsTo(db.Post);
     }
   }
   Post.init({

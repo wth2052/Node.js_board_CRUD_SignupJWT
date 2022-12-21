@@ -18,12 +18,6 @@ module.exports = {
       password: {
         type: Sequelize.STRING
       },
-      commentid: {
-        type: Sequelize.STRING
-      },
-      createdAt: {
-        type: Sequelize.DATE
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
