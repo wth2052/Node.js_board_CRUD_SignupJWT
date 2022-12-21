@@ -1,17 +1,23 @@
 const express = require("express");
+const CryptoJS = require("crypto-js"); 
 //비번 암호화
 //로그인 시 게시글로 가야함 = Posts router
-const jwt = require("jsonwebtoken");    
+const jwt = require("jsonwebtoken");  
+const session = require("express-session")  
 const router = express.Router();
-const { status } = require("express/lib/response");
-const { hash } = require("bcrypt");
+const { status, cookie } = require("express/lib/response");
 const passport = require('passport');
 const { Strategy: LocalStrategy } = require('passport-local');
-const bcrypt = require('bcrypt');
+const { hash } = require("bcrypt");
+
+
 const tokenRouter = require('./token');
 const app = express();
-app.use('/token', tokenRouter);
+const env = process.env;
+
+app.use('/', tokenRouter);
 require('dotenv').config({path: '../../.env'});
+
 //토큰을 받아주는 함수
 // setUserToken = (res, userId) => {
 //     const token = jwt.sign({ userId: user.userId }, "customized-secret-key")
@@ -23,10 +29,17 @@ require('dotenv').config({path: '../../.env'});
 const { Op } = require("sequelize");
 const { User } = require("../models");
 // const passportConfig = { usernameField: 'userId', passwordField: 'password' };
+
+  // //토큰을 통해 회원 인증
+  // jwt.verify(token,JWT_ACCESS_SECRET,(err,encode)=>{
+  //     if(err) console.error(err);
+  //     else {
+  //         console.log(encode);
+  //     }
+  // });
+
 router.post("/", async (req, res) => {
-    
     const { email, password } = req.body;
-  
     const user = await User.findOne({
       where: {
         email,
@@ -34,15 +47,43 @@ router.post("/", async (req, res) => {
     });
   
     // NOTE: 인증 메세지는 자세히 설명하지 않는것을 원칙으로 한다: https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#authentication-responses
-    if (!user || password !== user.password) {
-      res.status(400).send({
-        errorMessage: "이메일 또는 패스워드가 틀렸습니다.",
-      });
-      return;
+    // if (!user || password !== user.password) {
+    //   res.status(400).send({
+    //     errorMessage: "이메일 또는 패스워드가 틀렸습니다.",
+    //   });
+    //   return;
+    // }
+
+
+
+    const existPw = user.password 
+    const decryptedPw = CryptoJS.AES.decrypt(existPw,process.env.keyForDecrypt);
+    const originPw = decryptedPw.toString(CryptoJS.enc.Utf8);
+
+    if (originPw != password) {
+        res.status(400).send({errorMessage: '닉네임 또는 비밀번호를 확인해주세요'});
+        return;
+    } else {
+      //if문 전부 통과했다면 정보가 정확하다는 얘기
+      //id라는 쿠키에 token 부여후 
+        const token = jwt.sign({ nickname : user.nickname},process.env.JWT_ACCESS_SECRET, { expiresIn: '5m'});
+        res.cookie('id', token, {
+      httpOnly: true
+    });
+    res.send ({token});
+    console.log(req.cookie)
+    if(!req.cookies){
+      res.status(401).send({errorMessage: "로그인이 필요합니다."})
+      return
     }
-    //5분짜리 토큰
-    const token = jwt.sign({userId: user.userId}, process.env.JWT_SECRET ,{ expiresIn: '5m'})
-    // setUserToken(res, req.userId);
+}
+
+  });
+  
+  module.exports = router;
+
+
+      // setUserToken(res, req.userId);
     // res.redirect('/');
     // setUserToken = (res, user)=> {
     // const token = jwt.sign(user, secret);
@@ -60,10 +101,10 @@ router.post("/", async (req, res) => {
     // res.send({
     //   token: token, 
     // });
-    res.cookie('user', token, {
-      httpOnly: true
-    });
-    res.send('로그인에 성공하였습니다.');
-  });
-  
-  module.exports = router;
+
+  //   const token = jwt.sign({id: user.userId}, env.JWT_ACCESS_SECRET ,{ expiresIn: '5m'})
+    
+  //   res.cookie('id', token, {
+  //     httpOnly: true
+  //   });
+  //   res.send('로그인에 성공하였습니다.');

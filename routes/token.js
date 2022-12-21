@@ -5,25 +5,25 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require('cookie-parser');
 const app = express();
 app.use(cookieParser());
-async function main() {
-    const token = jwt.sign({ myPayloadData: 1234 }, //jwt를 이용해서 payload 설정하는 부분
-        SECRET_KEY,
-        {       expiresIn: "6h"}
-        ); // jwt를 이용해서 암호화를 하기 위한 비밀키
-        setTimeout(() =>{
-            console.log(token);
+// async function main() {
+//     const token = jwt.sign({ myPayloadData: 1234 }, //jwt를 이용해서 payload 설정하는 부분
+//         SECRET_KEY,
+//         {       expiresIn: "6h"}
+//         ); // jwt를 이용해서 암호화를 하기 위한 비밀키
+//         setTimeout(() =>{
+//             console.log(token);
     
     
-            const decodeToken = jwt.decode(token); // jwt의 Payload를 확인하기 위해서 사용
-            console.log(decodeToken) //{ myPayloadData: 1234, iat: 1671419122 }
+//             const decodeToken = jwt.decode(token); // jwt의 Payload를 확인하기 위해서 사용
+//             console.log(decodeToken) //{ myPayloadData: 1234, iat: 1671419122 }
             
-            const verifyToken = jwt.verify(token, SECRET_KEY); // 비밀키가 일치해야함
-            console.log(verifyToken); //{ myPayloadData: 1234, iat: 1671419188 } 이 값은 검증되었음을 의미함.
-        }, 1500); // 수명이 1s인 jwt에게 1.5초뒤 값을 검증하라고 시키면?
-        //TokenExpiredError: jwt expired 오류 출력.
+//             const verifyToken = jwt.verify(token, SECRET_KEY); // 비밀키가 일치해야함
+//             console.log(verifyToken); //{ myPayloadData: 1234, iat: 1671419188 } 이 값은 검증되었음을 의미함.
+//         }, 1500); // 수명이 1s인 jwt에게 1.5초뒤 값을 검증하라고 시키면?
+//         //TokenExpiredError: jwt expired 오류 출력.
     
-    }
-    main()
+//     }
+//     main()
 
     
 let tokenObject = {}; // Refresh Token을 저장할 Object

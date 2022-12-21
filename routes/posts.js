@@ -1,8 +1,11 @@
+
 // /routes/posts.js
 const express = require("express")
 const router = express.Router()
-const Posts = require("../schemas/posts.js")
+const { Post, Comments } = require('../models')
 const authMiddleware = require("../middlewares/auth-middleware");
+
+
 // 게시물 작성 POST
     router.post("/", authMiddleware, async (req, res) => {
     const {user, password, title, content} = req.body
@@ -21,9 +24,11 @@ const authMiddleware = require("../middlewares/auth-middleware");
 
 //GET 게시글 조회 완성
 router.get("/", async (req, res) => {
-  const getAllPosts = await Posts.find();
-  res.json({ getAllPosts })
-})
+  let posts = await Post.findAll({}).catch((err) => console.log(err));
+  res.status(200).send(posts);
+});
+
+
 
 //GET 게시글 상세조회 완성
 router.get("/:postsId", async (req, res) => {

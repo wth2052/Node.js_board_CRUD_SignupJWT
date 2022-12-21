@@ -12,6 +12,7 @@ const port = 3000;
 const tokenRouter = require('./routes/token');
 const signupRouter = require('./routes/signup');
 const signinRouter = require('./routes/signin');
+const postRouter = require('./routes/posts');
 const router = express.Router();
 require('dotenv').config({path: '../../.env'});
 const env = process.env;
@@ -29,7 +30,7 @@ app.use(requestMiddleware);
 app.use('/token', tokenRouter);
 app.use('/auth', signupRouter);
 app.use('/login', signinRouter);
-
+app.use('/post', postRouter)
 
 app.use("/api", express.urlencoded({ extended: false }), router);
 // 정적 파일 서빙 assets 파일 서빙해줘, 전역 미들웨어
