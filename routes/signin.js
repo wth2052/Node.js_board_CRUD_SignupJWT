@@ -11,7 +11,7 @@ const bcrypt = require('bcrypt');
 const tokenRouter = require('./token');
 const app = express();
 app.use('/token', tokenRouter);
-
+require('dotenv').config({path: '../../.env'});
 //토큰을 받아주는 함수
 // setUserToken = (res, userId) => {
 //     const token = jwt.sign({ userId: user.userId }, "customized-secret-key")
@@ -40,8 +40,7 @@ router.post("/", async (req, res) => {
       });
       return;
     }
-
-    
+    const token = jwt.sign({userId: user.userId}, process.env.JWT_SECRET )
     // setUserToken(res, req.userId);
     // res.redirect('/');
     // setUserToken = (res, user)=> {
@@ -55,8 +54,6 @@ router.post("/", async (req, res) => {
     //   if(err) return res.status(400).send(err);
     //   res.cookie("x_auth", user.token)
     // })
-
-    
 
     // 무작정 토큰 보내버리기~
     res.send({

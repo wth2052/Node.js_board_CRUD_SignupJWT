@@ -13,6 +13,8 @@ const tokenRouter = require('./routes/token');
 const signupRouter = require('./routes/signup');
 const signinRouter = require('./routes/signin');
 const router = express.Router();
+require('dotenv').config({path: '../../.env'});
+const env = process.env;
 // 미들웨어 (가장 상위에 위치)
 const requestMiddleware = (req, res, next) => {
   console.log('Request URL:', req.originalUrl, ' - ', new Date());

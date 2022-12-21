@@ -1,6 +1,8 @@
 require('dotenv').config();
 const env = process.env;
 
+const test2 = process.env.ENVTEST;
+console.log('test2', test2);
 
 const development = {
   username: env.MYSQL_USERNAME,

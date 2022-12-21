@@ -12,6 +12,8 @@ const { hash } = require("bcrypt");
 const app = express();
 const signinRouter = require('./signin');
 app.use('/signin', signinRouter);
+require('dotenv').config({path: '../../.env'});
+const env = process.env;
 // 회원가입
 const { Op } = require("sequelize");
 const { User } = require("../models");

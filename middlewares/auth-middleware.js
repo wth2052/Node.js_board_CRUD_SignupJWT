@@ -1,6 +1,8 @@
 // middlewares/auth-middleware.js
-
+require('dotenv').config({path: '../../.env'});
+const env = process.env;
 const jwt = require("jsonwebtoken");
+
 const { User } = require("../models");
 
 module.exports = (req, res, next) => {
