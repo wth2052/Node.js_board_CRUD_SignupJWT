@@ -50,7 +50,7 @@ router.post("/:id",authMiddleware, async (req, res, next) => {
 
 
 // Comment 수정
-router.patch("/:postsId/:_id", async (req, res) => {
+router.patch("/:postsId/:_id", authMiddleware, async (req, res) => {
   const {postsId,_id} = req.params;
   console.log(postsId)
   const {password, content} = req.body    //코멘트 아이디
@@ -70,7 +70,7 @@ router.patch("/:postsId/:_id", async (req, res) => {
 });
 
 // Comment 삭제
-router.delete("/:postsId/:_id", async (req, res) => {
+router.delete("/:postsId/:_id",authMiddleware, async (req, res) => {
   const {postsId,_id} = req.params;
   console.log(_id) 
   const find = await Posts.find ({postsId: postsId})

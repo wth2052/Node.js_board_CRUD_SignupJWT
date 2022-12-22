@@ -5,14 +5,16 @@ const router = express.Router()
 const { Post, Comments, sequelize } = require('../models')
 const authMiddleware = require("../middlewares/auth-middleware");
 const { Sequelize } = require("sequelize");
-const { User, Comment, Like } = require("../models");
+const { User, Comment, Likes } = require("../models");
 const db = require('../models');
 // 게시물 작성 POST
-    router.post("/",  async (req, res) => {
+    router.post("/", authMiddleware, async (req, res) => {
     const {user, password, title, content} = req.body
+    const user_id = req.user;
+    console.log(user_id)
     //빈칸에 대한 if 요청, try catch 사용
       try {
-          await Post.create({user, password, title, content})
+          await Post.create({user, password, title, content, user_id, post_id})
           return res.status(201).send({success: true,Message: '게시물 작성에 성공했습니다.'})
       } catch (err){ 
         if(!user || !password || !title || !content){
@@ -38,48 +40,22 @@ router.get("/", async (req, res) => {
 
 
 //GET 게시글 상세조회 완성
-router.get("/:id", async (req, res) => {
-  const {id} = req.params;
-  const user = res.locals.user;
-  console.log(user)
-  const data = await db.Post.findOne({
-    raw: true,
-    attributes: {
-      include: [[db.Sequelize.col("User.nickname") ,"user_id"]],
-      exclude: ["user_id"],
-    },
-    where: {
-      id,
-    },
-    include: [
-      {
-        model: db.User,
-        attributes: [],
-        as: "User",
-      },
-    ],
-  });
-  res.status(200).json(data);
-  // const [results] = await sequelize.query(
-  //   "SELECT Posts.content,Posts.user,Posts.title,Posts.createdAt,Posts.id,Comments.id FROM Posts LEFT JOIN Comments ON Posts.user = Comments.nickname IS NOT NULL"
-  // );
-  // res.status(200).json(results);
+router.get("/:post_id", async (req, res) => {
+  const { post_id } = req.params;
 
-  //   const [results] = await sequelize.query(
-  //   "SELECT Posts.content,Posts.user,Posts.title,Posts.createdAt,Posts.id,Comments.id FROM Posts LEFT JOIN Comments ON Posts.user = Comments.nickname IS NOT NULL"
-  // );
-  // res.status(200).json(results);
+  const data = await Post.findOne({
+    where: { id: post_id },
+    attributes: ["id", "title", "content", "createdAt"],
+    include: [{
+        model: Comment,
+        attributes: ["id", "content", "createdAt"],
+        separate: true,
+        order: [["createdAt", "DESC"]]
+    }]
+});
 
-  // const getOnePosts = await Post.findOne({
-  //   include: [{
-  //       model: Comments,
-  //   where: {id: id}
-  // }]
-  // })
- 
-  
-
-})
+  res.status(200).json({ data });
+});
 
 
 
@@ -107,7 +83,7 @@ router.put("/:id", authMiddleware,async (req, res) => {
     // postsPws[i](for문의 i번째 password값)과 req.body에 담긴 password값과 일치할 경우
     if(ids[i] === Number(id) && postsPws[i] === password) {
       //Posts에 있는 자료를 id를 토대로 title content값을 입력한 값으로 바꿔준다. 이때 작업은 동기적으로 처리한다.
-      await Post.update({title: title, content: content}, {where:{id}})
+      await Post.upcreatedAt({title: title, content: content}, {where:{id}})
       // console.log(ids[i],Number(id),postsPws[i],password)
       //값을 바꾼뒤 json으로 success true와 수정에 성공하였다는 응답을 반환한다.
       res.json({ success: true, Message: '수정에 성공하였습니다.' });
