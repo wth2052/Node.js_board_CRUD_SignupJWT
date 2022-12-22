@@ -27,6 +27,7 @@ require('dotenv').config({path: '../../.env'});
 //로그인
 const { Op } = require("sequelize");
 const { User } = require("../models");
+const authMiddleware = require("../middlewares/auth-middleware");
 // const passportConfig = { usernameField: 'userId', passwordField: 'password' };
 
   // //토큰을 통해 회원 인증
@@ -59,13 +60,13 @@ router.post("/", async (req, res) => {
     } else {
       //if문 전부 통과했다면 정보가 정확하다는 얘기
       //id라는 쿠키에 token 부여후 
-        const token = jwt.sign({ nickname : user.nickname},process.env.JWT_ACCESS_SECRET, { expiresIn: '5m'});
+        const token = jwt.sign({ nickname : user.nickname,userId:"1"},process.env.JWT_ACCESS_SECRET, { expiresIn: '5m'});
         res.cookie('id', token, {
       httpOnly: true
     });
     res.send ({token});
-    console.log(req.cookie)
-    if(!req.cookies){
+    console.log(req.headers.cookie)
+    if(!req.headers.cookie){
       res.status(401).send({errorMessage: "로그인이 필요합니다."})
       return
     }

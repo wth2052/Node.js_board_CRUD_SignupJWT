@@ -12,7 +12,7 @@ router.get("/:postsId", async (req, res) => {
 })
 
 //POST 댓글 작성 완성
-router.post("/:id", async (req, res, next) => {
+router.post("/:id",authMiddleware, async (req, res, next) => {
   // const { id } = req.params;
   // const {nickname, password,content} = req.body
   // const post = await Post.findById (id)
@@ -29,8 +29,10 @@ router.post("/:id", async (req, res, next) => {
   //     return res.status(200).send({message: "댓글 작성 성공!"});
   //   }
   const {id} = req.params;
+  const user_id = req.user;
+  console.log(user_id)
   const {nickname, password, content} = req.body;
-  await Comment.create({nickname, password, content,post_id:id})
+  await Comment.create({nickname, password, content,post_id:id, user_id})
     .then((result) => {
       console.log(result);
       res.status(200).json(result);

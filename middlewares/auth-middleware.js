@@ -6,15 +6,13 @@ const jwt = require("jsonwebtoken");
 const { User } = require("../models");
 
 module.exports = (req, res, next) => {
-  const { authorization } = req.headers;
-    //헤더에 담긴 데이터를 Authorization이라는 변수에 담아 가져온다
-    //  authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2EwMDQ5NTdjZmY1MzJiYTFiYTYxNGIiLCJpYXQiOjE2NzE0MzIzNDJ9.vLnFWe_5M3SvEmzjrDffa9k1tyTKjtNu3rP1Sz9uMdA', 
-    //Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2EwMDQ5NTdjZmY1MzJiYTFiYTYxNGIiLCJpYXQiOjE2NzE0MzI0MzN9.7aDt0HuWWY1r-092zDtcQeLLzpdTGbsao5k6bo305Ro
-  const [authType, authToken] = (authorization || "").split(" ");//결과값을 배열로 담아줘.
-//띄어쓰기를 기준으로 값을 분할해라, 분할한 값을 두개로 나눠 담아라
-    //authType: Bearer
-    //authToken: 실제 JWT값이 들어옴
-  if (!authToken || authType !== "Bearer") {
+  // const { authorization } = req.headers;
+  // console.log(req.headers);
+  user_id = req.headers.cookie.split('=');
+  console.log("this is user_id",user_id)
+  //user_[1] = 토큰 번호
+
+  if (!user_id) {
     res.status(401).send({
       errorMessage: "로그인 후 이용 가능한 기능입니다.",
     });
@@ -23,9 +21,13 @@ module.exports = (req, res, next) => {
 
   try {
     // 복호화 및 검증
-    const { userId } = jwt.verify(authToken, "customized-secret-key");
+    const { userId } = jwt.verify(user_id[1], process.env.JWT_ACCESS_SECRET);
+    console.log(jwt,"##",userId);
+
     User.findByPk(userId).then((user) => { // {}오브젝트형태로 담아준다는 뜻
-      res.locals.user = user;
+      console.log(user);
+      req.user = user;
+      console.log("this is middleware",user);
       next(); //다음 미들웨어로 가라
     });
         // {
