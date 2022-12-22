@@ -28,8 +28,9 @@ router.post("/:id", async (req, res, next) => {
   //     console.log(result)
   //     return res.status(200).send({message: "댓글 작성 성공!"});
   //   }
+  const {id} = req.params;
   const {nickname, password, content} = req.body;
-  await Comment.create({nickname, password, content})
+  await Comment.create({nickname, password, content,post_id:id})
     .then((result) => {
       console.log(result);
       res.status(200).json(result);

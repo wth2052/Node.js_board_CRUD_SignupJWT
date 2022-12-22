@@ -12,11 +12,6 @@ module.exports = {
       post_id: {
         type: Sequelize.INTEGER
       },
-      nickname: {
-        allowNull: false,
-        unique:true,
-        type: Sequelize.STRING
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

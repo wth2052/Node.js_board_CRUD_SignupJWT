@@ -40,8 +40,7 @@ module.exports = (req, res, next) => {
       errorMessage: "로그인 후 이용 가능한 기능입니다.",
     });
   }
-  res.locals.userId = userId;
-  next();
+
   
       //시크릿키가 일치 안할시 서버가 꺼지게 됨, 그러므로 try catch를 이용해 이 코드들의 에러를 catch해준다.
 };
