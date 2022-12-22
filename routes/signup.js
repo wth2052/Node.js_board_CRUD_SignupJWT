@@ -20,7 +20,7 @@ const { User } = require("../models");
 
 
 router.post("/", async (req, res) => {
-  const { email, nickname, password, confirmPassword } = req.body;
+  const { email, nickname, pwd, confirmPassword } = req.body;
 
 //닉네임 표현식 확인 3자이상, 알파벳 대소문자, 숫자만 허용
     const correct_nickname = /^[a-zA-Z0-9]{3,10}$/ //닉네임 정규표현식
@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
         return; 
     }
 //비밀번호 4자 이상 확인 로직
-    if (password.length < 4) {
+    if (pwd.length < 4) {
         res.status(400).send({
             errorMessage: "비밀번호는 안전을 위해 4자 이상으로 만들어주세요."
         });
@@ -39,7 +39,7 @@ router.post("/", async (req, res) => {
     }
 
 //비밀번호와 닉네임과 같은 경우 가입 불허 로직
-    if (password === nickname){
+    if (pwd === nickname){
         res.status(400).send({
             errorMessage: "안전을 위해 비밀번호와 닉네임은 다르게 구성해주세요."
     });
@@ -49,7 +49,7 @@ router.post("/", async (req, res) => {
 
 
 // 패스워드 확인 로직
-  if (password !== confirmPassword) {
+  if (pwd !== confirmPassword) {
     res.status(400).send({
       errorMessage: "패스워드가 패스워드 확인란과 다릅니다.",
     });
@@ -70,7 +70,7 @@ router.post("/", async (req, res) => {
     });
     return;
   }
-
+  const password = CryptoJS.AES.encrypt(pwd, process.env.keyForDecrypt).toString();
   await User.create({ email, nickname, password });
   res.status(201).send({});
 });

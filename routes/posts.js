@@ -33,18 +33,51 @@ router.get("/", async (req, res) => {
 
 //GET 게시글 상세조회 완성
 router.get("/:id", async (req, res) => {
-  const { id } = req.params;
+  // const { id } = req.params;
   
-  const [results] = await sequelize.query(
-    "SELECT * FROM Posts LEFT JOIN Comments ON Posts.id = Comments.id"
-  );
+  // const [results] = await sequelize.query(
+  //   "SELECT * FROM Posts LEFT JOIN Comments ON Posts.id = Comments.id"
+  // );
+  // res.status(200).json(results);
+
+
   // const getOnePosts = await Post.findOne({
-    // include: [{
-    //     model: Comments,
-    // where: {id: id}
+  //   include: [{
+  //       model: Comments,
+  //   where: {id: id}
   // }]
   // })
-  res.status(200).json(results);
+  try {
+    const { post_id: id } = req.params;
+    const post = await Post.findOne({
+      where: { id },
+      include: [
+        { model : User,
+          attributes: ['nickname']
+        },
+        { model : Comment,
+          attributes : ['comment', 'createdAt'],
+          include : [
+            {
+              model : User,
+              attributes : ['nickname']
+            }
+          ]
+        }
+      ]
+    });
+    if (!post){
+      return res.status(400).json({errorMessage:"게시글 조회에 실패하였습니다."})
+    }
+
+    res.json({ post })
+  }
+  catch (err) {
+    console.log(err)
+    res.status(400).json({ errorMessage: "게시글 조회에 실패하였습니다." })
+  }
+  
+
 })
 
 
