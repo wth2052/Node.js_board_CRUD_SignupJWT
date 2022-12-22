@@ -8,8 +8,11 @@ const { User } = require("../models");
 module.exports = (req, res, next) => {
   // const { authorization } = req.headers;
   // console.log(req.headers);
+  const token = req.headers.cookie.split('=')[1];
+  console.log("규렬 민섭 만세",token)
+  req.decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+  console.log("규렬 민섭 만세",req.decoded)
   user_id = req.headers.cookie.split('=');
-  console.log("this is user_id",user_id)
   //user_[1] = 토큰 번호
 
   if (!user_id) {

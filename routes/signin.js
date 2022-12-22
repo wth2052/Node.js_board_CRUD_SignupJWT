@@ -5,9 +5,6 @@ const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");  
 const session = require("express-session")  
 const router = express.Router();
-const { status, cookie } = require("express/lib/response");
-
-const { hash } = require("bcrypt");
 
 
 const tokenRouter = require('./token');

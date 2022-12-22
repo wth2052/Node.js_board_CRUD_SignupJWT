@@ -2,6 +2,7 @@
 // /routes/posts.js
 const express = require("express")
 const router = express.Router()
+const jwt = require("jsonwebtoken");  
 const { Post, Comments, sequelize } = require('../models')
 const authMiddleware = require("../middlewares/auth-middleware");
 const { Sequelize } = require("sequelize");
@@ -10,11 +11,11 @@ const db = require('../models');
 // 게시물 작성 POST
     router.post("/", authMiddleware, async (req, res) => {
     const {user, password, title, content} = req.body
-    const user_id = req.user;
-    console.log(user_id)
+    const user_id = req.decoded.userId;
+    console.log("★★★★★★★★★★★★★★★★★★★★★★★★★★★★",user_id)
     //빈칸에 대한 if 요청, try catch 사용
       try {
-          await Post.create({user, password, title, content, user_id, post_id})
+          await Post.create({user, password, title, content, user_id})
           return res.status(201).send({success: true,Message: '게시물 작성에 성공했습니다.'})
       } catch (err){ 
         if(!user || !password || !title || !content){
@@ -142,7 +143,90 @@ router.delete("/:id", authMiddleware,async (req, res) => {
 })
 
 
+// 게시글 좋아요
+router.post("/:post_id/likes", async (req, res) => {
+  try {
+      const { post_id } = req.params;
+      const user_id = 1;
 
+      const post = Post.findOne({
+          where: { id: post_id }
+      })
+
+      if (!post) {
+          return res.status(404).json({
+              msg: "게시글이 존재하지 않습니다."
+          });
+      }
+
+      const likes = await Post.findOne({
+          where: { id: post_id },
+          attributes: ["likes"]
+      });
+
+      const check_like = await Likes.findOne({
+          where: {
+              post_id: post_id,
+              user_id: user_id
+          }
+      })
+
+      if (check_like === null) {
+          Likes.create({ done: 1, post_id, user_id });
+          Post.update({
+              likes: likes.likes + 1
+          }, {
+              where: { id: post_id }
+          });
+          return res.status(201).json({
+              msg: "좋아요를 눌렀습니다."
+          });
+      }
+
+      if (check_like.done === 0) {
+          Like.update(
+              {
+                  done: 1
+              }, {
+              where: {
+                  post_id: post_id,
+                  user_id: user_id
+              }
+          });
+          Post.update({
+              likes: likes.likes + 1
+          }, {
+              where: { id: post_id }
+          });
+          return res.status(200).json({
+              msg: "좋아요를 눌렀습니다."
+          });
+      } else {
+          Likes.update(
+              {
+                  done: 0
+              }, {
+              where: {
+                  post_id: post_id,
+                  user_id: user_id
+              }
+          });
+          Post.update({
+              likes: likes.likes - 1
+          }, {
+              where: { id: post_id }
+          });
+          return res.status(200).json({
+              msg: "좋아요를 취소했습니다."
+          });
+      }
+  } catch (error) {
+      console.log(error);
+      res.status(400).json({
+          msg: "게시글 좋아요에 실패하였습니다."
+      });
+  }
+});
 
 
 
