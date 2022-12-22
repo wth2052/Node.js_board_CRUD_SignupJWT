@@ -6,8 +6,7 @@ const jwt = require("jsonwebtoken");
 const session = require("express-session")  
 const router = express.Router();
 const { status, cookie } = require("express/lib/response");
-const passport = require('passport');
-const { Strategy: LocalStrategy } = require('passport-local');
+
 const { hash } = require("bcrypt");
 
 
@@ -40,23 +39,17 @@ const { User } = require("../models");
 
 router.post("/", async (req, res) => {
     const { email, password } = req.body;
+    console.log(email, password)
     const user = await User.findOne({
       where: {
         email,
       },
+      
     });
-  
-    // NOTE: 인증 메세지는 자세히 설명하지 않는것을 원칙으로 한다: https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#authentication-responses
-    // if (!user || password !== user.password) {
-    //   res.status(400).send({
-    //     errorMessage: "이메일 또는 패스워드가 틀렸습니다.",
-    //   });
-    //   return;
-    // }
-
-
-
-    const existPw = user.password 
+    console.log(user)
+    // NOTE: 인증 메세지는 자세히 설명하지 않는것을 원칙으로 한다: https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#authentication-responses 
+    const existPw = user.password;
+    console.log(existPw)
     const decryptedPw = CryptoJS.AES.decrypt(existPw,process.env.keyForDecrypt);
     const originPw = decryptedPw.toString(CryptoJS.enc.Utf8);
 

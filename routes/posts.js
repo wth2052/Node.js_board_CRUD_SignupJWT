@@ -5,8 +5,8 @@ const router = express.Router()
 const { Post, Comments, sequelize } = require('../models')
 const authMiddleware = require("../middlewares/auth-middleware");
 const { Sequelize } = require("sequelize");
-
-
+const { User, Comment, Like } = require("../models");
+const db = require('../models');
 // 게시물 작성 POST
     router.post("/",  async (req, res) => {
     const {user, password, title, content} = req.body
@@ -25,21 +25,50 @@ const { Sequelize } = require("sequelize");
 
 //GET 게시글 조회 완성
 router.get("/", async (req, res) => {
-  let posts = await Post.findAll({}).catch((err) => console.log(err));
-  res.status(200).send(posts);
-});
+  try {
+    const posts = await Post.findAll({});
+    res.json({posts});
+  }
+  catch (err){
+    res.status(400).json({errorMessage:"게시글 조회에 실패하였습니다."})
+    console.log(err)
+  }
+})
 
 
 
 //GET 게시글 상세조회 완성
 router.get("/:id", async (req, res) => {
-  // const { id } = req.params;
-  
+  const {id} = req.params;
+  const user = res.locals.user;
+  console.log(user)
+  const data = await db.Post.findOne({
+    raw: true,
+    attributes: {
+      include: [[db.Sequelize.col("User.nickname") ,"user_id"]],
+      exclude: ["user_id"],
+    },
+    where: {
+      id,
+    },
+    include: [
+      {
+        model: db.User,
+        attributes: [],
+        as: "User",
+      },
+    ],
+  });
+  res.status(200).json(data);
   // const [results] = await sequelize.query(
-  //   "SELECT * FROM Posts LEFT JOIN Comments ON Posts.id = Comments.id"
+  //   "SELECT Posts.content,Posts.user,Posts.title,Posts.createdAt,Posts.id,Comments.id FROM Posts LEFT JOIN Comments ON Posts.user = Comments.nickname IS NOT NULL"
   // );
   // res.status(200).json(results);
 
+  //   const [results] = await sequelize.query(
+  //   "SELECT Posts.content,Posts.user,Posts.title,Posts.createdAt,Posts.id,Comments.id FROM Posts LEFT JOIN Comments ON Posts.user = Comments.nickname IS NOT NULL"
+  // );
+  // res.status(200).json(results);
 
   // const getOnePosts = await Post.findOne({
   //   include: [{
@@ -47,35 +76,7 @@ router.get("/:id", async (req, res) => {
   //   where: {id: id}
   // }]
   // })
-  try {
-    const { post_id: id } = req.params;
-    const post = await Post.findOne({
-      where: { id },
-      include: [
-        { model : User,
-          attributes: ['nickname']
-        },
-        { model : Comment,
-          attributes : ['comment', 'createdAt'],
-          include : [
-            {
-              model : User,
-              attributes : ['nickname']
-            }
-          ]
-        }
-      ]
-    });
-    if (!post){
-      return res.status(400).json({errorMessage:"게시글 조회에 실패하였습니다."})
-    }
-
-    res.json({ post })
-  }
-  catch (err) {
-    console.log(err)
-    res.status(400).json({ errorMessage: "게시글 조회에 실패하였습니다." })
-  }
+ 
   
 
 })

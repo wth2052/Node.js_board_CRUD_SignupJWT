@@ -12,7 +12,7 @@ router.get("/:postsId", async (req, res) => {
 })
 
 //POST 댓글 작성 완성
-router.post("/:id", async (req, res) => {
+router.post("/:id", async (req, res, next) => {
   // const { id } = req.params;
   // const {nickname, password,content} = req.body
   // const post = await Post.findById (id)

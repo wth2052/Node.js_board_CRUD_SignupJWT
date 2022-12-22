@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      models.Post.belongsTo(models.User, {foreignKey: "user_id"}), // 사용자는 단 하나의 닉네임을 가질 수 있음
+      models.Post.belongsTo(models.User, {foreignKey: "nickname"}), // 사용자는 단 하나의 닉네임을 가질 수 있음
       models.Post.hasMany(models.Comment, {foreignKey: "post_id"}), // 사용자는 여러개의 댓글을 가질 수 있음
       models.Post.hasMany(models.Like, {foreignKey: "post_id"})
     }
