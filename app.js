@@ -9,15 +9,14 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const app = express();
 const port = 3000;
-const tokenRouter = require('./routes/token');
 const signupRouter = require('./routes/signup');
 const commentRouter = require('./routes/comments');
 const signinRouter = require('./routes/signin');
 const postRouter = require('./routes/posts');
 const router = express.Router();
 require('dotenv').config({path: '../../.env'});
-const env = process.env;
-// 미들웨어 (가장 상위에 위치)
+
+// requestMiddleWare, 요청 URL과 요청한 시간을 console.log에 띄워준다.
 const requestMiddleware = (req, res, next) => {
   console.log('Request URL:', req.originalUrl, ' - ', new Date());
   next();
@@ -25,25 +24,25 @@ const requestMiddleware = (req, res, next) => {
 app.use(cookieParser());
 app.use(cors());
 app.use(express.static("static"))
-// app.use(express.urlencoded({extended: false}))
 app.use(express.json());
 app.use(requestMiddleware);
-app.use('/token', tokenRouter);
 app.use('/auth', signupRouter);
 app.use('/login', signinRouter);
 app.use('/post', postRouter)
 app.use('/comment', commentRouter);
 app.use("/api", express.urlencoded({ extended: false }), router);
-// 정적 파일 서빙 assets 파일 서빙해줘, 전역 미들웨어
 app.use(express.static("assets"));
-
-// app.use(requestMiddleware);
-// app.use("/api", routers)
 
 
 app.listen(port, () => {
-  console.log('***************** ***************** *****************')
-  console.log('********** 서버가 정상적으로 실행되고 있습니다 *********')
-  console.log('*************** 현재 포트 : '+port+'***************')
-  console.log('***************** ***************** *****************')
+
+  console.log(`%c ________________________________________
+ Server is already running on port ${port}
+ ----------------------------------------
+        \\   ^__^
+         \\  (oo)\\_______
+            (__)\\       )\\/\\
+                ||----w |
+                ||     ||`, "font-family:monospace")
+
 });

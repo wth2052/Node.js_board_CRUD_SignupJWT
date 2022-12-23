@@ -2,9 +2,7 @@ const express = require("express");
 const CryptoJS = require("crypto-js"); 
 const jwt = require("jsonwebtoken");    
 const router = express.Router();
-const tokenRouter = require('./token');
 const app = express();
-app.use('/', tokenRouter);
 require('dotenv').config({path: '../../.env'});
 
 
