@@ -1,1 +1,0 @@
-SELECT * FROM Posts LEFT JOIN Comments ON Posts.id = Comments.id

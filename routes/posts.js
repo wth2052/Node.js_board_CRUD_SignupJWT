@@ -2,19 +2,16 @@
 // /routes/posts.js
 const express = require("express")
 const router = express.Router()
-const jwt = require("jsonwebtoken");  
-const { Post, Comments, sequelize } = require('../models')
+const { Post } = require('../models')
 const authMiddleware = require("../middlewares/auth-middleware");
-const { Sequelize } = require("sequelize");
-const { User, Comment, Like } = require("../models");
-const db = require('../models');
+const { Comment, Like } = require("../models");
 
 // 게시물 작성 POST
     router.post("/", authMiddleware, async (req, res) => {
     const {user, password, title, content, post_id} = req.body
     const user_id = req.decoded.userId;
       try {
-          await Post.create({user, password, title, content, user_id, post_id})
+          await Post.create({user, password, title, content, user_id})
           return res.status(201).send({success: true,Message: '게시물 작성에 성공했습니다.'})
       } catch (err){ 
         if(!user || !password || !title || !content){
@@ -25,7 +22,7 @@ const db = require('../models');
 });
 
 
-//GET 게시글 조회 완성
+//게시글 조회 GET
 router.get("/", async (req, res) => {
   try {
     const posts = await Post.findAll({ 
@@ -39,9 +36,7 @@ router.get("/", async (req, res) => {
   }
 })
 
-
-
-//GET 게시글 상세조회 완성
+//게시글 상세조회 GET
 router.get("/:post_id", async (req, res) => {
   const { post_id } = req.params;
 
@@ -59,9 +54,7 @@ router.get("/:post_id", async (req, res) => {
   res.status(200).json({ data });
 });
 
-
-
-//PUT 게시글 수정 
+//게시글 수정 PUT
 // 발생할수 있는 상황 : 비밀번호 불일치, 비밀번호 입력안함, 비밀번호 일치
 router.put("/:id", authMiddleware,async (req, res) => {
   const { id } = req.params;
@@ -83,6 +76,7 @@ router.put("/:id", authMiddleware,async (req, res) => {
   }
 })
 
+//게시글 삭제 DELETE
 router.delete("/:id", authMiddleware,async (req, res) => {
   const { id } = req.params;
   const { password } = req.body;
@@ -102,7 +96,7 @@ router.delete("/:id", authMiddleware,async (req, res) => {
 })
 
 
-// 게시글 좋아요
+//게시글 좋아요 POST
 router.post("/:post_id/likes", authMiddleware, async (req, res) => {
   try {
       const { post_id } = req.params;

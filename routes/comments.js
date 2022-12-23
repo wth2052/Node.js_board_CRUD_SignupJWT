@@ -1,19 +1,18 @@
 // /routes/comments.js
 const express = require("express")
-const { QueryTypes } = require('sequelize');
 const router = express.Router()
 const { Comment, Post } = require('../models')
 const authMiddleware = require("../middlewares/auth-middleware.js");
 
 
-//GET 댓글 조회 완성
+//댓글 조회 GET
 router.get("/:postsId", async (req, res) => {
   const { postsId } = req.params;
   const getAllComments = await Posts.find({ postsId: Number(postsId)});
   res.json({ getAllComments })
 })
 
-//POST 댓글 작성 완성
+//댓글 작성 POST
 router.post("/:id",authMiddleware, async (req, res, next) => {
   const {id} = req.params;
   const user_id = req.decoded.userId;
@@ -28,15 +27,13 @@ router.post("/:id",authMiddleware, async (req, res, next) => {
       console.error(err);
       next(err);
     })
-
     if(!content || !nickname || !password){
         return res.status(400).json({success: false, errorMessage:"내용이나 작성자가 입력되지 않았습니다. 다시한번 확인해주세요."});
       }
-  
 });
 
 
-// Comment 수정
+//댓글 수정 PUT
 router.put("/:post_id/:comment_id", authMiddleware, async (req, res) => {
   try {
     const { post_id, comment_id } = req.params;
@@ -92,7 +89,7 @@ router.put("/:post_id/:comment_id", authMiddleware, async (req, res) => {
 }
 });
 
-// Comment 삭제
+//댓글 삭제 DELETE
 router.delete("/:post_id/:comment_id",authMiddleware, async (req, res) =>   {  
 try {
   const { post_id, comment_id } = req.params;
