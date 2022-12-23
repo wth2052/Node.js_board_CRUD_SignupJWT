@@ -5,20 +5,18 @@
 ### API 명세서
 |기능|API URL|Method|Request|Response|Response(error)|
 |---|---|---|---|---|---|
-|회원 가입|/signup|POST|{  "email": "test21@gmail.com","nickname": "teeemo12","pwd": "123456","confirmPassword": "123456"}|<br>#200<br>{"message": "회원가입에 성공하였습니다."}|#412<br> {errorMessage: "닉네임은 최소 3자이상, 알파벳 대소문자, 숫자로만 구성되어야 합니다."}<br>#412<br> {errorMessage: "비밀번호는 안전을 위해 4자 이상으로 만들어주세요."}<br>#412<br> {errorMessage: "안전을 위해 비밀번호와 닉네임은 다르게 구성해주세요."}<br>#412<br>{errorMessage: "패스워드가 패스워드 확인란과 다릅니다. ",}<br>#412<br> {errorMessage: "이메일 또는 닉네임이 이미 사용중입니다."}|
-|로그인|/signin|POST|{"email":"test1@gmail.com","password": "123456"}|{message:"회원가입에 성공하였습니다."}|{errorMessage: '닉네임 또는 비밀번호를 확인해주세요'}|
-|게시글 작성|API URL|Method|Request|Response|Response(error)|
-|로그인|API URL|Method|Request|Response|Response(error)|
-|게시글 조회|API URL|Method|Request|Response|Response(error)|
-|게시글 상세 조회|API URL|Method|Request|Response|Response(error)|
-|게시글 수정|API URL|Method|Request|Response|Response(error)|
-|게시글 삭제|API URL|Method|Request|Response|Response(error)|
-|댓글 생성|API URL|Method|Request|Response|Response(error)|
-|댓글 목록 조회|API URL|Method|Request|Response|Response(error)|
-|댓글 수정|API URL|Method|Request|Response|Response(error)|
-|댓글 삭제|API URL|Method|Request|Response|Response(error)|
-|좋아요 게시글 조회|API URL|Method|Request|Response|Response(error)|
-|게시글 좋아요|API URL|Method|Request|Response|Response(error)|
+|회원 가입|/signup|POST|{  "email": "test21@gmail.com","nickname": "teeemo12","pwd": "123456","confirmPassword": "123456"}|<br>**#200**<br>{"message": "회원가입에 성공하였습니다."}|**#412**<br> {errorMessage: "닉네임은 최소 3자이상, 알파벳 대소문자, 숫자로만 구성되어야 합니다."}<br><br>**#412**<br> {errorMessage: "비밀번호는 안전을 위해 4자 이상으로 만들어주세요."}<br><br>**#412**<br> {errorMessage: "안전을 위해 비밀번호와 닉네임은 다르게 구성해주세요."}<br><br>**#412**<br>{errorMessage: "패스워드가 패스워드 확인란과 다릅니다. ",}<br><br>**#412**<br> {errorMessage: "이메일 또는 닉네임이 이미 사용중입니다."}|
+|로그인|/signin|POST|{"email":"test1@gmail.com","password": "123456"}|{"token": "eyJhbGciOiJIUzI1NiIs...."}|**#400**<br>{errorMessage: '닉네임 또는 비밀번호를 확인해주세요'}|
+|게시글 작성|/post|POST|{"user": "teemo0","title": "제목123","content": "내용123","password": "123456123"}|{"success": true,"Message": "게시물 작성에 성공했습니다."}|**#400**<br>{errorMessage: "로그인이 필요합니다."})<br><br>**#400**<br>{success: false, errorMessage:"데이터 형식이 올바르지 않습니다. 빈곳이 없는지 다시한번 확인해주세요."}|
+|게시글 조회|/post|GET|-|{"posts": [{"id": 1,"user": "teemo0","title": "제목123","content": "내용123","likes": 1,"user_id": 1},{"id": 2,"user": "teemo0","title": "제123","content": "내용123","likes": 0,"user_id": 1},|**#400**<br>{errorMessage:"게시글 조회에 실패하였습니다."}<br>|
+|게시글 상세 조회|/:post_id|get|-|"data": {"id": 1,"title": "제목123","content": "내용123","likes": 1,"Comments": [{"id": 5,"content": "티모는 귀엽다","createdAt": "2022-12-23T07:29:48.000Z"},|-|
+|게시글 수정|/:id|PUT|{"password": "1123456","title": "123456","content": "123456"}|{ success: true, Message: '수정에 성공하였습니다.' }|**#412**{ success: false, Message: '비밀번호가 일치하지 않습니다.' }<br>**#412**<br>{success: false, msg: "비밀번호를 입력해주세요." }|
+|게시글 삭제|/:id|DELETE|{"password": "1123456","title": "123456","content": "123456"}|{ success: true, Message: '삭제에 성공하였습니다.' }|**#412**{ success: false, Message: '비밀번호가 일치하지 않습니다.' }<br>**#412**<br>{success: false, msg: "비밀번호를 입력해주세요." }|
+|댓글 작성|/:id|POST|{"id": 6,"nickname": "hello0","password": "123456","content": "티모는 귀엽다","post_id": "1","user_id": 1,"updatedAt": "2022-12-23T10:59:00.745Z","createdAt": "2022-12-23T10:59:00.745Z"}|{Message : "댓글 작성에 성공했습니다."}|**#400**<br>{success: false, errorMessage:"내용이나 작성자가 입력되지 않았습니다. 다시한번 확인해주세요."}|
+|댓글 목록 조회|/comment/post_id|GET|-|{"getAllComments": [{"id": 1,"user": "teemo0","password": "123456123","title": "제목123","likes": 1,"content": "내용123","createdAt": "2022-12-23T02:56:17.000Z","updatedAt": "2022-12-23T02:56:31.000Z","user_id": 1},|-|
+|댓글 수정|/:post_id/:comment_id|PUT|{"content": "ㅋㅋ"}|{msg: "댓글 내용이 수정되었습니다."}|**#412**<br>{ErrorMessage: "댓글 작성 형식이 올바르지 않습니다."}<br>**#404**<br>{ErrorMessage: "해당하는 게시글이 존재하지 않습니다."}<br>**#404**<br>{ErrorMessage: "해당하는 댓글이 존재하지 않습니다."}<br>**#403**<br>{ErrorMessage: "자기가 작성하지 않은 댓글은 수정할 수 없습니다."}|
+|댓글 삭제|/:post_id/:comment_id|DELETE|-|{msg: "댓글이 삭제되었습니다."}|**#412**<br>{ErrorMessage: "댓글 작성 형식이 올바르지 않습니다."}<br>**#404**<br>{ErrorMessage: "해당하는 게시글이 존재하지 않습니다."}<br>**#404**<br>{ErrorMessage: "해당하는 댓글이 존재하지 않습니다."}<br>**#403**<br>{ErrorMessage: "자기가 작성하지 않은 댓글은 삭제할 수 없습니다."}<br>**#400**<br>{msg: "댓글 삭제에 실패했습니다."}|
+|게시글 좋아요|/:post_id/likes|POST|**#200**<br>{"msg": "좋아요를 눌렀습니다."},<br>**#200**{"msg": "좋아요를 취소했습니다."}<br>|-|**#404**<br>{msg: "게시글이 존재하지 않습니다."}<br>**#404**<br>{msg: "게시글 좋아요 요청이 실패했습니다."}|
 
 1. 회원 가입 API  
     - 닉네임은 `최소 3자 이상, 알파벳 대소문자(a~z, A~Z), 숫자(0~9)`로 구성하기  
@@ -170,6 +168,8 @@
     #### order: [["createdAt", "DESC"]] 를 사용해 많은순 내림차정렬을 하였음.
     
 10. ★미비된 사항★   
+    ### 1. 내 프로젝트에 swagger 적용해보기
+    - Open Api Specification(OAS)를 위한 프레임워크 입니다. API들이 가지고 있는 스펙(spec)을 명세, 관리할 수 있으며, 백엔드와 프론트엔드가 협업할 때 사용할 수 있습니다!
     ### 로그인
     - 로그인 토큰을 전달한 채로 로그인 API 또는 회원가입 API를 호출한 경우 "이미 로그인이 되어있습니다."라는 에러 메세지를 response에 포함하기
     ### 댓글
