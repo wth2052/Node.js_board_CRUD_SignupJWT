@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const { Post, Comments, sequelize } = require('../models')
 const authMiddleware = require("../middlewares/auth-middleware");
 const { Sequelize } = require("sequelize");
-const { User, Comment, Likes } = require("../models");
+const { User, Comment, Like } = require("../models");
 const db = require('../models');
 // 게시물 작성 POST
     router.post("/", authMiddleware, async (req, res) => {
@@ -164,7 +164,7 @@ router.post("/:post_id/likes", async (req, res) => {
           attributes: ["likes"]
       });
 
-      const check_like = await Likes.findOne({
+      const check_like = await Like.findOne({
           where: {
               post_id: post_id,
               user_id: user_id
@@ -172,7 +172,7 @@ router.post("/:post_id/likes", async (req, res) => {
       })
 
       if (check_like === null) {
-          Likes.create({ done: 1, post_id, user_id });
+          Like.create({ done: 1, post_id, user_id });
           Post.update({
               likes: likes.likes + 1
           }, {
@@ -202,7 +202,7 @@ router.post("/:post_id/likes", async (req, res) => {
               msg: "좋아요를 눌렀습니다."
           });
       } else {
-          Likes.update(
+          Like.update(
               {
                   done: 0
               }, {

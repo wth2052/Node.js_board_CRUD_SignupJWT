@@ -16,12 +16,15 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Like.init({
+    done: {
+      type: DataTypes.INTEGER
+    },
     post_id: DataTypes.INTEGER,
     user_id: DataTypes.INTEGER,
-    nickname: DataTypes.STRING
-  }, {
+  },{
     sequelize,
     modelName: 'Like',
+    timestamps: false
   });
   return Like;
 };

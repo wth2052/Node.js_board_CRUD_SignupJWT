@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
     user: DataTypes.STRING,
     password: DataTypes.STRING,
     title: DataTypes.STRING,
+    likes: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
     content: DataTypes.STRING,
     createdAt: DataTypes.DATE
   }, {
