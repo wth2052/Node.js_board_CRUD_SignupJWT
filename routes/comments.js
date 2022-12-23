@@ -114,8 +114,6 @@ try {
           msg: "해당하는 댓글이 존재하지 않습니다"
       });
   }
-  console.log("안녕?",check_comment.user_id)
-  console.log("hello?",user_id)
   if (check_comment.user_id !== user_id) {
       return res.status(403).json({
           msg: "자기가 작성하지 않은 댓글은 삭제할 수 없습니다."

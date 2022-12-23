@@ -51,6 +51,7 @@ router.post("/", async (req, res) => {
       [Op.or]: [{ email }, { nickname } ],
     },
   });
+  console.log("★",existsUsers)
   if (existsUsers.length) {
     res.status(400).send({
       errorMessage: "이메일 또는 닉네임이 이미 사용중입니다.",

@@ -18,7 +18,6 @@ router.post("/",  async (req, res) => {
     });
     // NOTE: 인증 메세지는 자세히 설명하지 않는것을 원칙으로 한다: https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#authentication-responses 
     const existPw = user.password;
-    console.log(existPw)
     const decryptedPw = CryptoJS.AES.decrypt(existPw,process.env.keyForDecrypt);
     const originPw = decryptedPw.toString(CryptoJS.enc.Utf8);
 
@@ -26,7 +25,7 @@ router.post("/",  async (req, res) => {
         res.status(400).send({errorMessage: '닉네임 또는 비밀번호를 확인해주세요'});
         return;
     } else { 
-        const token = jwt.sign({ nickname : user.nickname,userId:user.id},process.env.JWT_ACCESS_SECRET, { expiresIn: '5m'});
+        const token = jwt.sign({ nickname : user.nickname,userId:user.id},process.env.JWT_ACCESS_SECRET, { expiresIn: '30m'});
         res.cookie('id', token, {
       httpOnly: true
     });
