@@ -20,7 +20,6 @@ app.use('/signup', signupRouter);
 app.use('/login', signinRouter);
 app.use('/post', postRouter)
 app.use('/comment', commentRouter);
-app.use("/api", express.urlencoded({ extended: false }), router);
 app.use(express.static("assets"));
 
 

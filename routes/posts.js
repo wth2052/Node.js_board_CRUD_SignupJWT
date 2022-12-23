@@ -69,9 +69,9 @@ router.put("/:id", authMiddleware,async (req, res) => {
       await Post.upcreatedAt({title: title, content: content}, {where:{id}})
       res.json({ success: true, Message: '수정에 성공하였습니다.' });
     } else if (ids[i] === Number(id) && postsPws[i] != password){ 
-      return res.json({ success: false, Message: '비밀번호가 일치하지 않습니다.' });
+      return res.status(412).json({ success: false, Message: '비밀번호가 일치하지 않습니다.' });
   } else if (!password){
-      return res.json({success: false, msg: "비밀번호를 입력해주세요." })
+      return res.status(412).json({success: false, ErrorMessage: "비밀번호를 입력해주세요." })
     }
   }
 })
@@ -88,9 +88,9 @@ router.delete("/:id", authMiddleware,async (req, res) => {
       await Post.destroy({where:{id}})
       res.json({ success: true, Message: '삭제에 성공하였습니다.' });
     } else if (ids[i] === Number(id) && postsPws[i] != password){ 
-      return res.json({ success: false, Message: '비밀번호가 일치하지 않습니다.' });
+      return res.status(412).json({ success: false, Message: '비밀번호가 일치하지 않습니다.' });
   } else if (!password){
-      return res.json({success: false, msg: "비밀번호를 입력해주세요." })
+      return res.status(412).json({success: false, ErrorMessage: "비밀번호를 입력해주세요." })
     }
   }
 })
@@ -106,7 +106,7 @@ router.post("/:post_id/likes", authMiddleware, async (req, res) => {
       })
       if (!post) {
           return res.status(404).json({
-              msg: "게시글이 존재하지 않습니다."
+              ErrorMessage: "게시글이 존재하지 않습니다."
           });
       }
 
@@ -130,7 +130,7 @@ router.post("/:post_id/likes", authMiddleware, async (req, res) => {
               where: { id: post_id }
           });
           return res.status(201).json({
-              msg: "좋아요를 눌렀습니다."
+              ErrorMessage: "좋아요를 눌렀습니다."
           });
       }
 
@@ -150,7 +150,7 @@ router.post("/:post_id/likes", authMiddleware, async (req, res) => {
               where: { id: post_id }
           });
           return res.status(200).json({
-              msg: "좋아요를 눌렀습니다."
+              ErrorMessage: "좋아요를 눌렀습니다."
           });
       } else {
           Like.update(
@@ -168,13 +168,13 @@ router.post("/:post_id/likes", authMiddleware, async (req, res) => {
               where: { id: post_id }
           });
           return res.status(200).json({
-              msg: "좋아요를 취소했습니다."
+              ErrorMessage: "좋아요를 취소했습니다."
           });
       }
   } catch (error) {
       console.log(error);
       res.status(400).json({
-          msg: "게시글 좋아요 요청이 실패했습니다."
+          ErrorMessage: "게시글 좋아요 요청이 실패했습니다."
       });
   }
 });

@@ -5,9 +5,9 @@ const authMiddleware = require("../middlewares/auth-middleware.js");
 
 
 //댓글 조회 GET
-router.get("/:postsId", async (req, res) => {
-  const { postsId } = req.params;
-  const getAllComments = await Posts.find({ postsId: Number(postsId)});
+router.get("/:post_id", async (req, res) => {
+  const { post_id } = req.params;
+  const getAllComments = await Post.findAll({post_id});
   res.json({ getAllComments })
 })
 
@@ -20,14 +20,14 @@ router.post("/:id",authMiddleware, async (req, res, next) => {
   await Comment.create({nickname, password, content,post_id:id, user_id})
     .then((result) => {
       console.log(result);
-      res.status(200).json(result);
+      res.status(200).json({Message : "댓글 작성에 성공했습니다."});
     })
     .catch((err) => {
       console.error(err);
       next(err);
     })
     if(!content || !nickname || !password){
-        return res.status(400).json({success: false, errorMessage:"내용이나 작성자가 입력되지 않았습니다. 다시한번 확인해주세요."});
+        return res.status(400).json({success: false, ErrorMessage:"내용이나 작성자가 입력되지 않았습니다. 다시한번 확인해주세요."});
       }
 });
 
@@ -40,7 +40,7 @@ router.put("/:post_id/:comment_id", authMiddleware, async (req, res) => {
     const user_id = req.decoded.userId;
     if (!content || content === "") {
       return res.status(412).json({
-          msg: "댓글 작성 형식이 올바르지 않습니다."
+        ErrorMessage: "댓글 작성 형식이 올바르지 않습니다."
       });
   }
 
@@ -50,7 +50,7 @@ router.put("/:post_id/:comment_id", authMiddleware, async (req, res) => {
 
   if (!post) {
       return res.status(404).json({
-          msg: "해당하는 게시글이 존재하지 않습니다."
+        ErrorMessage: "해당하는 게시글이 존재하지 않습니다."
       });
   }
 
@@ -61,13 +61,13 @@ router.put("/:post_id/:comment_id", authMiddleware, async (req, res) => {
 
   if (!check_comment) {
       return res.status(404).json({
-          msg: "해당하는 댓글이 존재하지 않습니다."
+        ErrorMessage: "해당하는 댓글이 존재하지 않습니다."
       });
   }
 
   if (check_comment.user_id !== user_id) {
       return res.status(403).json({
-          msg: "자기가 작성하지 않은 댓글은 수정할 수 없습니다."
+          ErrorMessage: "자기가 작성하지 않은 댓글은 수정할 수 없습니다."
       });
   }
 
@@ -83,7 +83,7 @@ router.put("/:post_id/:comment_id", authMiddleware, async (req, res) => {
 } catch (error) {
   console.log(error);
   res.status(400).json({
-      msg: "댓글 수정에 실패하였습니다."
+      ErrorMessage: "댓글 수정에 실패하였습니다."
   });
 }
 });
