@@ -8,7 +8,7 @@
 |회원 가입|/signup|POST|{  "email": "test21@gmail.com","nickname": "teeemo12","pwd": "123456","confirmPassword": "123456"}|<br>**#200**<br>{"message": "회원가입에 성공하였습니다."}|**#412**<br> {errorMessage: "닉네임은 최소 3자이상, 알파벳 대소문자, 숫자로만 구성되어야 합니다."}<br>**#412**<br> {errorMessage: "비밀번호는 안전을 위해 4자 이상으로 만들어주세요."}<br>**#412**<br> {errorMessage: "안전을 위해 비밀번호와 닉네임은 다르게 구성해주세요."}<br>**#412**<br>{errorMessage: "패스워드가 패스워드 확인란과 다릅니다. ",}<br>**#412**<br> {errorMessage: "이메일 또는 닉네임이 이미 사용중입니다."}|
 |로그인|/signin|POST|{"email":"test1@gmail.com","password": "123456"}|{"token": "eyJhbGciOiJIUzI1NiIs...."}|{errorMessage: '닉네임 또는 비밀번호를 확인해주세요'}|
 |게시글 작성|/post|POST|{"user": "teemo0","title": "제목123","content": "내용123","password": "123456123"}|{"success": true,"Message": "게시물 작성에 성공했습니다."}|{errorMessage: "로그인이 필요합니다."})|
-|게시글 조회|API URL|Method|Request|Response|Response(error)|
+|게시글 조회|/post|GET|Request|Response|Response(error)|
 |게시글 상세 조회|API URL|Method|Request|Response|Response(error)|
 |게시글 수정|API URL|Method|Request|Response|Response(error)|
 |게시글 삭제|API URL|Method|Request|Response|Response(error)|
@@ -169,6 +169,8 @@
     #### order: [["createdAt", "DESC"]] 를 사용해 많은순 내림차정렬을 하였음.
     
 10. ★미비된 사항★   
+    ### 1. 내 프로젝트에 swagger 적용해보기
+    - Open Api Specification(OAS)를 위한 프레임워크 입니다. API들이 가지고 있는 스펙(spec)을 명세, 관리할 수 있으며, 백엔드와 프론트엔드가 협업할 때 사용할 수 있습니다!
     ### 로그인
     - 로그인 토큰을 전달한 채로 로그인 API 또는 회원가입 API를 호출한 경우 "이미 로그인이 되어있습니다."라는 에러 메세지를 response에 포함하기
     ### 댓글
