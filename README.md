@@ -71,19 +71,19 @@
     - 로그인 토큰을 전달하지 않아도 댓글 목록 조회가 가능하도록 하기
     #### 목록 조회가능
     - 조회하는 게시글에 작성된 모든 댓글을 목록 형식으로 response에 포함하기   
-```javascript
-    try {
-    const posts = await Post.findAll({
-    attributes: ['id', 'user', 'title', 'content', 'likes', 'user_id'],
-    order: [['likes', 'DESC']],});
-    res.json({posts});
-  }catch (err){
-    res.status(400).json({errorMessage:"게시글 조회에 실패하였습니다."})
-    console.log(err)
-  }
-```
-    - 제일 최근 작성된 댓글을 맨 위에 정렬하기
-
+    ```javascript
+        try {
+        const posts = await Post.findAll({
+        attributes: ['id', 'user', 'title', 'content', 'likes', 'user_id'],
+        order: [['likes', 'DESC']],});
+        res.json({posts});
+      }catch (err){
+        res.status(400).json({errorMessage:"게시글 조회에 실패하였습니다."})
+        console.log(err)
+      }
+    ```
+    - 제일 최근 작성된 댓글을 맨 위에 정렬하기   
+    
 5. 댓글 작성 API
     - 로그인 토큰을 전달했을 때에만 댓글 작성이 가능하도록 하기
     #### authMiddleWare를 통해 토큰을 전달받은 경우만 댓글 작성이 가능하게 되어있음.
@@ -94,30 +94,62 @@
 
 6. 댓글 수정 API
     - 로그인 토큰에 해당하는 사용자가 작성한 댓글만 수정 가능하도록 하기
-```javascript
-     const check_comment = await Comment.findOne({
-      where: { id: comment_id },
-      attributes: ["id", "user_id"]
-  })
-```
-    ####!check_comment / 자기가 작성한 댓글이 아닐시 400 에러메세지와 함께 return
-    
+    ```javascript
+         const check_comment = await Comment.findOne({
+          where: { id: comment_id },
+          attributes: ["id", "user_id"]
+      })
+    ```
+    #### !check_comment / 자기가 작성한 댓글이 아닐시 400 에러메세지와 함께 return
+
+    ```javascript
+          await Comment.update({
+          content
+      }, {
+          where: { id: comment_id }
+      });
+    ```   
+
     - API를 호출한 경우 기존 댓글의 내용을 새로 입력한 댓글 내용으로 바꾸기
-    ```
-      await Comment.update({
-      content
-  }, {
-      where: { id: comment_id }
-  });
-    ```
+
     
 7. 댓글 삭제 API
     - 로그인 토큰에 해당하는 사용자가 작성한 댓글만 삭제 가능하도록 하기
+    #### !check_comment / 자기가 작성한 댓글이 아닐시 400 에러메세지와 함께 return
 8. 게시글 좋아요 API
     - 로그인 토큰을 전달했을 때에만 좋아요 할 수 있게 하기
+    #### authMiddleWare를 통해 토큰을 전달받은 경우만 좋아요가 가능하게 되어있음.
     - 로그인 토큰에 해당하는 사용자가 좋아요 한 글에 한해서, 좋아요 취소 할 수 있게 하기
+    ```javascript
+      const likes = await Post.findOne({
+      where: { id: post_id },
+      attributes: ["likes"]
+      });
+
+      const check_like = await Like.findOne({
+          where: {
+              post_id: post_id,
+              user_id: user_id
+          }
+      })
+    ```
     - 게시글 목록 조회시 글의 좋아요 갯수도 같이 표출하기
+    ```javascript
+      const data = await Post.findOne({
+    where: { id: post_id },
+    attributes: ["id", "title", "content", "likes"],
+    include: [{
+        model: Comment,
+        attributes: ["id", "content", "createdAt"],
+        separate: true,
+        order: [["createdAt", "DESC"]]
+    }]
+    });
+    ```
 9. 좋아요 게시글 조회 API
     - 로그인 토큰을 전달했을 때에만 좋아요 게시글 조회할 수 있게 하기
     - 로그인 토큰에 해당하는 사용자가 좋아요 한 글에 한해서, 조회할 수 있게 하기
+     
     - 제일 좋아요가 많은 게시글을 맨 위에 정렬하기
+    #### order: [["createdAt", "DESC"]] 를 사용해 많은순 내림차정렬을 하였음.
+        
