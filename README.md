@@ -5,12 +5,12 @@
 ### API 명세서
 |기능|API URL|Method|Request|Response|Response(error)|
 |---|---|---|---|---|---|
-|회원 가입|/signup|POST|{  "email": "test21@gmail.com","nickname": "teeemo12","pwd": "123456","confirmPassword": "123456"}|<br>**#200**<br>{"message": "회원가입에 성공하였습니다."}|**#412**<br> {errorMessage: "닉네임은 최소 3자이상, 알파벳 대소문자, 숫자로만 구성되어야 합니다."}<br>**#412**<br> {errorMessage: "비밀번호는 안전을 위해 4자 이상으로 만들어주세요."}<br>**#412**<br> {errorMessage: "안전을 위해 비밀번호와 닉네임은 다르게 구성해주세요."}<br>**#412**<br>{errorMessage: "패스워드가 패스워드 확인란과 다릅니다. ",}<br>**#412**<br> {errorMessage: "이메일 또는 닉네임이 이미 사용중입니다."}|
-|로그인|/signin|POST|{"email":"test1@gmail.com","password": "123456"}|{"token": "eyJhbGciOiJIUzI1NiIs...."}|<br>**400**<br>{errorMessage: '닉네임 또는 비밀번호를 확인해주세요'}|
-|게시글 작성|/post|POST|{"user": "teemo0","title": "제목123","content": "내용123","password": "123456123"}|{"success": true,"Message": "게시물 작성에 성공했습니다."}|<br>**#400**<br>{errorMessage: "로그인이 필요합니다."})<br><br>**#400**<br>{success: false, errorMessage:"데이터 형식이 올바르지 않습니다. 빈곳이 없는지 다시한번 확인해주세요."}|
-|게시글 조회|/post|GET|-|{"posts": [{"id": 1,"user": "teemo0","title": "제목123","content": "내용123","likes": 1,"user_id": 1},{"id": 2,"user": "teemo0","title": "제123","content": "내용123","likes": 0,"user_id": 1},|<br>**#400**<br>{errorMessage:"게시글 조회에 실패하였습니다."}<br>|
+|회원 가입|/signup|POST|{  "email": "test21@gmail.com","nickname": "teeemo12","pwd": "123456","confirmPassword": "123456"}|<br>**#200**<br>{"message": "회원가입에 성공하였습니다."}|**#412**<br> {errorMessage: "닉네임은 최소 3자이상, 알파벳 대소문자, 숫자로만 구성되어야 합니다."}<br><br>**#412**<br> {errorMessage: "비밀번호는 안전을 위해 4자 이상으로 만들어주세요."}<br><br>**#412**<br> {errorMessage: "안전을 위해 비밀번호와 닉네임은 다르게 구성해주세요."}<br><br>**#412**<br>{errorMessage: "패스워드가 패스워드 확인란과 다릅니다. ",}<br><br>**#412**<br> {errorMessage: "이메일 또는 닉네임이 이미 사용중입니다."}|
+|로그인|/signin|POST|{"email":"test1@gmail.com","password": "123456"}|{"token": "eyJhbGciOiJIUzI1NiIs...."}|**#400**<br>{errorMessage: '닉네임 또는 비밀번호를 확인해주세요'}|
+|게시글 작성|/post|POST|{"user": "teemo0","title": "제목123","content": "내용123","password": "123456123"}|{"success": true,"Message": "게시물 작성에 성공했습니다."}|**#400**<br>{errorMessage: "로그인이 필요합니다."})<br><br>**#400**<br>{success: false, errorMessage:"데이터 형식이 올바르지 않습니다. 빈곳이 없는지 다시한번 확인해주세요."}|
+|게시글 조회|/post|GET|-|{"posts": [{"id": 1,"user": "teemo0","title": "제목123","content": "내용123","likes": 1,"user_id": 1},{"id": 2,"user": "teemo0","title": "제123","content": "내용123","likes": 0,"user_id": 1},|**#400**<br>{errorMessage:"게시글 조회에 실패하였습니다."}<br>|
 |게시글 상세 조회|/:post_id|get|-|"data": {"id": 1,"title": "제목123","content": "내용123","likes": 1,"Comments": [{"id": 5,"content": "티모는 귀엽다","createdAt": "2022-12-23T07:29:48.000Z"},|-|
-|게시글 수정|/:id|PUT|{"password": "1123456","title": "123456","content": "123456"}|{ success: true, Message: '수정에 성공하였습니다.' }|{ success: false, Message: '비밀번호가 일치하지 않습니다.' }<br>{success: false, msg: "비밀번호를 입력해주세요." }|
+|게시글 수정|/:id|PUT|{"password": "1123456","title": "123456","content": "123456"}|{ success: true, Message: '수정에 성공하였습니다.' }|**#412**{ success: false, Message: '비밀번호가 일치하지 않습니다.' }<br>**#412**<br>{success: false, msg: "비밀번호를 입력해주세요." }|
 |게시글 삭제|API URL|Method|Request|Response|Response(error)|
 |댓글 생성|API URL|Method|Request|Response|Response(error)|
 |댓글 목록 조회|API URL|Method|Request|Response|Response(error)|
