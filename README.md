@@ -3,7 +3,7 @@
 ## 이번 과제의 요구사항
 
 ### API 명세서
-|기능　　　　|API URL|Method|Request|Response|Response(error)|
+|기능　　　　　　|API URL|Method|Request|Response|Response(error)|
 |:------------------------------:|:-------:|:-----------------:|:-------------------:|:----------------:|:-------------------:|
 |회원 가입|/signup|POST|{  "email": "test21@gmail.com","nickname": "teeemo12","pwd": "123456","confirmPassword": "123456"}|<br>**#200**<br>{"message": "회원가입에 성공하였습니다."}|**#412**<br> {errorMessage: "닉네임은 최소 3자이상, 알파벳 대소문자, 숫자로만 구성되어야 합니다."}<br><br>**#412**<br> {errorMessage: "비밀번호는 안전을 위해 4자 이상으로 만들어주세요."}<br><br>**#412**<br> {errorMessage: "안전을 위해 비밀번호와 닉네임은 다르게 구성해주세요."}<br><br>**#412**<br>{errorMessage: "패스워드가 패스워드 확인란과 다릅니다. ",}<br><br>**#412**<br> {errorMessage: "이메일 또는 닉네임이 이미 사용중입니다."}|
 |로그인|/signin|POST|{"email":"test1@gmail.com","password": "123456"}|{"token": "eyJhbGciOiJIUzI1NiIs...."}|**#400**<br>{errorMessage: '닉네임 또는 비밀번호를 확인해주세요'}|
