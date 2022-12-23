@@ -17,14 +17,14 @@ router.post("/", async (req, res) => {
 //닉네임 정규표현식 확인 3자이상, 알파벳 대소문자, 숫자만 허용
     const correct_nickname = /^[a-zA-Z0-9]{3,10}$/ 
     if (!(correct_nickname.test(nickname))) {
-        res.status(400).send({
+        res.status(412).send({
             errorMessage: "닉네임은 최소 3자이상, 알파벳 대소문자, 숫자로만 구성되어야 합니다."
         });
         return; 
     }
 //비밀번호 4자 이상 확인
     if (pwd.length < 4) {
-        res.status(400).send({
+        res.status(412).send({
             errorMessage: "비밀번호는 안전을 위해 4자 이상으로 만들어주세요."
         });
         return; 
@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
 
 //비밀번호와 닉네임과 같은 경우 가입 불허
     if (pwd === nickname){
-        res.status(400).send({
+        res.status(412).send({
             errorMessage: "안전을 위해 비밀번호와 닉네임은 다르게 구성해주세요."
     });
     return; 
@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
 
 // 패스워드 확인
   if (pwd !== confirmPassword) {
-    res.status(400).send({
+    res.status(412).send({
       errorMessage: "패스워드가 패스워드 확인란과 다릅니다.",
     });
     return;
@@ -51,16 +51,15 @@ router.post("/", async (req, res) => {
       [Op.or]: [{ email }, { nickname } ],
     },
   });
-  console.log("★",existsUsers)
   if (existsUsers.length) {
-    res.status(400).send({
+    res.status(412).send({
       errorMessage: "이메일 또는 닉네임이 이미 사용중입니다.",
     });
     return;
   }
   const password = CryptoJS.AES.encrypt(pwd, process.env.keyForDecrypt).toString();
   await User.create({ email, nickname, password });
-  res.status(201).send({});
+  res.status(201).send({message:"회원가입에 성공하였습니다."});
 });
 
   module.exports = router;

@@ -16,7 +16,7 @@ const requestMiddleware = (req, res, next) => {
 app.use(express.static("static"))
 app.use(express.json());
 app.use(requestMiddleware);
-app.use('/auth', signupRouter);
+app.use('/signup', signupRouter);
 app.use('/login', signinRouter);
 app.use('/post', postRouter)
 app.use('/comment', commentRouter);

@@ -22,7 +22,7 @@ router.post("/",  async (req, res) => {
     const originPw = decryptedPw.toString(CryptoJS.enc.Utf8);
 
     if (originPw != password) {
-        res.status(400).send({errorMessage: '닉네임 또는 비밀번호를 확인해주세요'});
+        res.status(412).send({errorMessage: '닉네임 또는 비밀번호를 확인해주세요'});
         return;
     } else { 
         const token = jwt.sign({ nickname : user.nickname,userId:user.id},process.env.JWT_ACCESS_SECRET, { expiresIn: '30m'});
