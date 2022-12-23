@@ -2,6 +2,24 @@
 
 ## 이번 과제의 요구사항
 
+### API 명세서
+|기능|API URL|Method|Request|Response|Response(error)|
+|---|---|---|---|---|---|
+|회원 가입|/auth|POST|Request|Response|Response(error)|
+|로그인|API URL|Method|Request|Response|Response(error)|
+|게시글 작성|API URL|Method|Request|Response|Response(error)|
+|로그인|API URL|Method|Request|Response|Response(error)|
+|게시글 조회|API URL|Method|Request|Response|Response(error)|
+|게시글 상세 조회|API URL|Method|Request|Response|Response(error)|
+|게시글 수정|API URL|Method|Request|Response|Response(error)|
+|게시글 삭제|API URL|Method|Request|Response|Response(error)|
+|댓글 생성|API URL|Method|Request|Response|Response(error)|
+|댓글 목록 조회|API URL|Method|Request|Response|Response(error)|
+|댓글 수정|API URL|Method|Request|Response|Response(error)|
+|댓글 삭제|API URL|Method|Request|Response|Response(error)|
+|좋아요 게시글 조회|API URL|Method|Request|Response|Response(error)|
+|게시글 좋아요|API URL|Method|Request|Response|Response(error)|
+
 1. 회원 가입 API  
     - 닉네임은 `최소 3자 이상, 알파벳 대소문자(a~z, A~Z), 숫자(0~9)`로 구성하기  
    #### -정규표현식을 사용하여 구분하였음
