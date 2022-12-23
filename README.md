@@ -5,7 +5,7 @@
 ### API 명세서
 |기능|API URL|Method|Request|Response|Response(error)|
 |---|---|---|---|---|---|
-|회원 가입|/signup|POST|{  "email": "test21@gmail.com","nickname": "teeemo12","pwd": "123456","confirmPassword": "123456"}|{"message": "회원가입에 성공하였습니다."}|#412 {errorMessage: "닉네임은 최소 3자이상, 알파벳 대소문자, 숫자로만 구성되어야 합니다."}|
+|회원 가입|/signup|POST|{  "email": "test21@gmail.com","nickname": "teeemo12","pwd": "123456","confirmPassword": "123456"}|{"message": "회원가입에 성공하였습니다."}|#412 {errorMessage: "닉네임은 최소 3자이상, 알파벳 대소문자, 숫자로만 구성되어야 합니다."}   ㅇㅇ|
 |로그인|/signin|POST|{"email":"test1@gmail.com","password": "123456"}|{message:"회원가입에 성공하였습니다."}|{errorMessage: '닉네임 또는 비밀번호를 확인해주세요'}|
 |게시글 작성|API URL|Method|Request|Response|Response(error)|
 |로그인|API URL|Method|Request|Response|Response(error)|
