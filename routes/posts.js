@@ -174,7 +174,7 @@ router.post("/:post_id/likes", authMiddleware, async (req, res) => {
   } catch (error) {
       console.log(error);
       res.status(400).json({
-          msg: "게시글 좋아요에 실패하였습니다."
+          msg: "게시글 좋아요 요청이 실패했습니다."
       });
   }
 });
