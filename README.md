@@ -11,13 +11,12 @@
 |게시글 조회|/post|GET|-|{"posts": [{"id": 1,"user": "teemo0","title": "제목123","content": "내용123","likes": 1,"user_id": 1},{"id": 2,"user": "teemo0","title": "제123","content": "내용123","likes": 0,"user_id": 1},|**#400**<br>{errorMessage:"게시글 조회에 실패하였습니다."}<br>|
 |게시글 상세 조회|/:post_id|get|-|"data": {"id": 1,"title": "제목123","content": "내용123","likes": 1,"Comments": [{"id": 5,"content": "티모는 귀엽다","createdAt": "2022-12-23T07:29:48.000Z"},|-|
 |게시글 수정|/:id|PUT|{"password": "1123456","title": "123456","content": "123456"}|{ success: true, Message: '수정에 성공하였습니다.' }|**#412**{ success: false, Message: '비밀번호가 일치하지 않습니다.' }<br>**#412**<br>{success: false, msg: "비밀번호를 입력해주세요." }|
-|게시글 삭제|API URL|Method|Request|Response|Response(error)|
-|댓글 생성|API URL|Method|Request|Response|Response(error)|
-|댓글 목록 조회|API URL|Method|Request|Response|Response(error)|
-|댓글 수정|API URL|Method|Request|Response|Response(error)|
-|댓글 삭제|API URL|Method|Request|Response|Response(error)|
-|좋아요 게시글 조회|API URL|Method|Request|Response|Response(error)|
-|게시글 좋아요|API URL|Method|Request|Response|Response(error)|
+|게시글 삭제|/:id|DELETE|{"password": "1123456","title": "123456","content": "123456"}|{ success: true, Message: '삭제에 성공하였습니다.' }|**#412**{ success: false, Message: '비밀번호가 일치하지 않습니다.' }<br>**#412**<br>{success: false, msg: "비밀번호를 입력해주세요." }|
+|댓글 작성|/:id|POST|{"id": 6,"nickname": "hello0","password": "123456","content": "티모는 귀엽다","post_id": "1","user_id": 1,"updatedAt": "2022-12-23T10:59:00.745Z","createdAt": "2022-12-23T10:59:00.745Z"}|{Message : "댓글 작성에 성공했습니다."}|**#400**<br>{success: false, errorMessage:"내용이나 작성자가 입력되지 않았습니다. 다시한번 확인해주세요."}|
+|댓글 목록 조회|/comment/post_id|GET|-|{"getAllComments": [{"id": 1,"user": "teemo0","password": "123456123","title": "제목123","likes": 1,"content": "내용123","createdAt": "2022-12-23T02:56:17.000Z","updatedAt": "2022-12-23T02:56:31.000Z","user_id": 1},|-|
+|댓글 수정|/:post_id/:comment_id|PUT|{"content": "ㅋㅋ"}|{msg: "댓글 내용이 수정되었습니다."}|**#412**<br>{ErrorMessage: "댓글 작성 형식이 올바르지 않습니다."}<br>**#404**<br>{ErrorMessage: "해당하는 게시글이 존재하지 않습니다."}<br>**#404**<br>{ErrorMessage: "해당하는 댓글이 존재하지 않습니다."}<br>**#403**<br>{ErrorMessage: "자기가 작성하지 않은 댓글은 수정할 수 없습니다."}|
+|댓글 삭제|/:post_id/:comment_id|DELETE|-|{msg: "댓글이 삭제되었습니다."}|**#412**<br>{ErrorMessage: "댓글 작성 형식이 올바르지 않습니다."}<br>**#404**<br>{ErrorMessage: "해당하는 게시글이 존재하지 않습니다."}<br>**#404**<br>{ErrorMessage: "해당하는 댓글이 존재하지 않습니다."}<br>**#403**<br>{ErrorMessage: "자기가 작성하지 않은 댓글은 삭제할 수 없습니다."}<br>**#400**<br>{msg: "댓글 삭제에 실패했습니다."}|
+|게시글 좋아요|/:post_id/likes|POST|**#200**<br>{"msg": "좋아요를 눌렀습니다."},<br>**#200**{"msg": "좋아요를 취소했습니다."}<br>|-|**#404**<br>{msg: "게시글이 존재하지 않습니다."}<br>**#404**<br>{msg: "게시글 좋아요 요청이 실패했습니다."}|
 
 1. 회원 가입 API  
     - 닉네임은 `최소 3자 이상, 알파벳 대소문자(a~z, A~Z), 숫자(0~9)`로 구성하기  
