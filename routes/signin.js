@@ -35,9 +35,8 @@ const authMiddleware = require("../middlewares/auth-middleware");
   //     }
   // });
 
-router.post("/", async (req, res) => {
+router.post("/",  async (req, res) => {
     const { email, password } = req.body;
-    console.log(email, password)
     const user = await User.findOne({
       where: {
         email,

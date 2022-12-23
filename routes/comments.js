@@ -2,8 +2,10 @@
 const express = require("express")
 const { QueryTypes } = require('sequelize');
 const router = express.Router()
-const { Comment } = require('../models')
+const { Comment, Post } = require('../models')
 const authMiddleware = require("../middlewares/auth-middleware.js");
+
+
 //GET 댓글 조회 완성
 router.get("/:postsId", async (req, res) => {
   const { postsId } = req.params;
@@ -13,23 +15,8 @@ router.get("/:postsId", async (req, res) => {
 
 //POST 댓글 작성 완성
 router.post("/:id",authMiddleware, async (req, res, next) => {
-  // const { id } = req.params;
-  // const {nickname, password,content} = req.body
-  // const post = await Post.findById (id)
-  //   if(nickname, content, password){
-  //       post.comments.push({
-  //       nickname, 
-  //       content, 
-  //       password,
-  //       id,
-  //       createdAt: new Date()
-  //   });
-  //     const result = await post.save();
-  //     console.log(result)
-  //     return res.status(200).send({message: "댓글 작성 성공!"});
-  //   }
   const {id} = req.params;
-  const user_id = req.user;
+  const user_id = req.decoded.userId;
   console.log(user_id)
   const {nickname, password, content} = req.body;
   await Comment.create({nickname, password, content,post_id:id, user_id})
@@ -50,41 +37,109 @@ router.post("/:id",authMiddleware, async (req, res, next) => {
 
 
 // Comment 수정
-router.patch("/:postsId/:_id", authMiddleware, async (req, res) => {
-  const {postsId,_id} = req.params;
-  console.log(postsId)
-  const {password, content} = req.body    //코멘트 아이디
-  const posts = await Posts.find({ postsId : postsId, "comments._id": _id});
-  // //하나는 postsId를 하나는 password를 쭉 돌아 나온 결과를 새로운 배열로써 반환해줌.
-  // const commentIds = posts.map((post) => post.commentId); 
-  // // [1, 2, 3, 4, 5, 6, 7]
-  // const commentsPws = posts.map((post) => post.password);
+router.put("/:post_id/:comment_id", authMiddleware, async (req, res) => {
   try {
-      await Posts.updateOne(
-      { postsId : postsId, "comments._id": _id},
-      { $set: {"comments.$.content": content} });
-      return res.status(200).send({message: "수정에 성공했습니다."});
-  } catch (error) {
-      return res.status(400).send({message: "수정에 실패했습니다."});
+    const { post_id, comment_id } = req.params;
+    const { content } = req.body;
+    const user_id = req.decoded.userId;
+    if (!content || content === "") {
+      return res.status(412).json({
+          msg: "댓글 작성 형식이 올바르지 않습니다."
+      });
   }
+
+  const post = await Post.findOne({
+      where: { id: post_id }
+  })
+
+  if (!post) {
+      return res.status(404).json({
+          msg: "해당하는 게시글이 존재하지 않습니다."
+      });
+  }
+
+  const check_comment = await Comment.findOne({
+      where: { id: comment_id },
+      attributes: ["id", "user_id"]
+  })
+
+  if (!check_comment) {
+      return res.status(404).json({
+          msg: "해당하는 댓글이 존재하지 않습니다."
+      });
+  }
+
+  if (check_comment.user_id !== user_id) {
+      return res.status(403).json({
+          msg: "자기가 작성하지 않은 댓글은 수정할 수 없습니다."
+      });
+  }
+
+  await Comment.update({
+      content
+  }, {
+      where: { id: comment_id }
+  });
+
+  res.status(200).json({
+      msg: "댓글 내용이 수정되었습니다."
+  })
+} catch (error) {
+  console.log(error);
+  res.status(400).json({
+      msg: "댓글 수정에 실패하였습니다."
+  });
+}
 });
 
 // Comment 삭제
-router.delete("/:postsId/:_id",authMiddleware, async (req, res) => {
-  const {postsId,_id} = req.params;
-  console.log(_id) 
-  const find = await Posts.find ({postsId: postsId})
-  console.log(find)
-  try {
-    
-  await Posts.updateOne(
-    { postsId: postsId},
-        {$pull: {comments: {_id: _id}}},
-      res.status(200).send({message:"삭제됐음"}))
-    } catch (error) {
-      return res.status(400).send({});
+router.delete("/:post_id/:comment_id",authMiddleware, async (req, res) =>   {  
+try {
+  const { post_id, comment_id } = req.params;
+  const user_id = req.decoded.userId;
+
+  const post = await Post.findOne({
+      where: { id: post_id }
+  })
+
+  if (!post) {
+      return res.status(404).json({
+          msg: "해당하는 게시글이 존재하지 않습니다"
+      });
   }
-});
+
+  const check_comment = await Comment.findOne({
+      where: { id: comment_id },
+      attributes: ["id", "user_id"]
+  })
+
+  if (!check_comment) {
+      return res.status(404).json({
+          msg: "해당하는 댓글이 존재하지 않습니다"
+      });
+  }
+  console.log("안녕?",check_comment.user_id)
+  console.log("hello?",user_id)
+  if (check_comment.user_id !== user_id) {
+      return res.status(403).json({
+          msg: "자기가 작성하지 않은 댓글은 삭제할 수 없습니다."
+      });
+  }
+
+  await Comment.destroy({
+      where: { id: comment_id }
+  });
+
+  res.status(200).json({
+      msg: "댓글이 삭제되었습니다."
+  });
+} catch (error) {
+  console.log(error);
+  res.status(400).json({
+      msg: "댓글 삭제에 실패했습니다."
+  });
+}
+})
 
 
 module.exports = router;

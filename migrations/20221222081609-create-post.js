@@ -30,10 +30,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER
       },
-      post_id: {
-        allowNull: false,
-        type: Sequelize.INTEGER
-      },
       likes: {
         type: Sequelize.INTEGER,
         defaultValue: 0
